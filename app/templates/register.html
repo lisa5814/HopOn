@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Register an account</h2>
+    <div class="content-section p-3">
+        <form method="POST" class="small-form">
+            <div class="form-outline mb-4">
+                <label for="name" class="form-label">Full name: </label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <!-- phone -->
+            <div class="form-outline mb-4">
+                <label for="phone" class="form-label">Phone number: </label>
+                <input type="text" class="form-control" id="phone" name="phone" required>
+            </div>
+            <!-- email -->
+            <div class="form-outline mb-4">
+                <label for="email" class="form-label">Email address: </label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <!-- password -->
+            <div class="form-outline mb-4">
+                <label for="password" class="form-label">Password: </label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <!-- confirm -->
+            <div class="form-outline mb-4">
+                <label for="confirm" class="form-label">Confirm password: </label>
+                <input type="password" class="form-control" id="confirm" name="confirm" required>
+            </div>
+            <!-- type -->
+            <div id="user-type" class="mb-3" required>
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <label for="type" class="form-label">Type: </label>
+                    </div>
+                    <div class="col-auto d-flex justify-content-center">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="user-type" id="driver" value="driver" required>
+                            <label class="form-check-label" for="driver">Driver</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="user-type" id="passenger" value="passenger" required>
+                            <label class="form-check-label" for="passenger">Passenger </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- vehicle -->
+            <div class="form-outline mb-4 driver-only" style="display: none;">
+                <label for="vehicle" class="form-label">Vehicle: </label>
+                <input type="text" class="form-control" id="vehicle" name="vehicle" required>
+            </div>
+            <div class="form-outline mb-4 driver-only" style="display: none;">
+                <label for="license-plate" class="form-label">License Plate: </label>
+                <input type="text" class="form-control" id="license-plate" name="license-plate" required>
+            </div>
+
+
+            <div class="mb-3 text-center d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-block">Register</button>
+            </div>
+            <p class="text-center">
+                Already have an account? Click <a class="link-danger" href="/login">here</a> to login.
+            </p>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
