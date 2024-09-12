@@ -53,21 +53,27 @@ def register():
         print('in post')
         email = request.form['email']
         name = request.form['name']
+        phone = request.form['phone']
         password = request.form['password']
         user_type = request.form['user-type']
 
         # save user to database
         response = api_register(email, name, password, user_type)
 
-        print(response)
+        if response == 'User already exists':
+            flash('User already exists', 'error')
+            return redirect(url_for('register'))
+        elif response == 'Error: Something went wrong':
+            flash('Something went wrong', 'error')
+            return redirect(url_for('register'))
 
-        # # save user to session
-        # user = {
-        #     'email': email,
-        #     'name': name,
-        #     'role': role
-        # }
-        # save_user(user)
+        # save user to session
+        user = {
+            'email': email,
+            'name': name,
+            'role': type
+        }
+        save_user(user)
 
         return redirect(url_for('home'))
     
@@ -117,7 +123,6 @@ def api_login(email: str, password: str) -> dict:
     
 # call user API that triggers register lambda function
 def api_register(email: str, name: str, password: str, user_type: str) -> dict:
-    # query_string = f'email={email}&name={name}&password={password}&type={user_type}'
     api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/user/register?'
     body = {
         'email': email,
