@@ -21,3 +21,8 @@ footer {
     border-radius: 5px; 
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
 }
+
+.navbar-nav .nav-item:hover {
+    text-decoration: underline;
+    color: #ffffff;
+}

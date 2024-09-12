@@ -10,17 +10,15 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-danger">
         <div class="container-fluid">
-            <a class="navbar-brand text-white" href="/">HopOn</a>
+            <a class="navbar-brand text-white fs-3" href="/"><strong>HopOn</strong></a>
             <div class="collapse navbar-collapse" id="navbarNavDropDown">
                 {% if session['type'] == 'driver' %}
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active text-white" aria-current="page" href="#">Post a ride</a>
+                            <a class="nav-link active text-white fs-5" aria-current="page" href="/create-rides">Create a ride</a>
                         </li>
-                    </ul>
-                    <ul>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Manage rides</a>
+                            <a class="nav-link text-white fs-5" href="/manage-rides">Manage rides</a>
                         </li>
                     </ul>
                 {% endif %}
