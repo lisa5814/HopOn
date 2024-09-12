@@ -95,7 +95,7 @@ def create_rides():
         # ...
 
         return redirect(url_for('home'))
-    return render_template('create-rides.html')
+    return render_template('create_rides.html')
 
 @application.route('/manage-rides', methods=['GET', 'POST'])
 def manage_rides():
@@ -104,7 +104,7 @@ def manage_rides():
     """
     # get all rides from database
     rides = []
-    return render_template('manage-rides.html', rides=rides)
+    return render_template('manage_rides.html', rides=rides)
 
 ### API functions ###
 
