@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Register
-{% endblock %}
+    Register account
+{% endblock %} 
 
 {% block body %}
 <div class="container py-5">
     <h2 class="mb-4 text-center">Register an account</h2>
     <div class="content-section p-3">
-        <form method="POST" class="small-form">
+        <form method="POST" class="small-form" action="/register">
             <div class="form-outline mb-4">
                 <label for="name" class="form-label">Full name: </label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -55,11 +55,11 @@
             <!-- vehicle -->
             <div class="form-outline mb-4 driver-only" style="display: none;">
                 <label for="vehicle" class="form-label">Vehicle: </label>
-                <input type="text" class="form-control" id="vehicle" name="vehicle" required>
+                <input type="text" class="form-control" id="vehicle" name="vehicle">
             </div>
             <div class="form-outline mb-4 driver-only" style="display: none;">
                 <label for="license-plate" class="form-label">License Plate: </label>
-                <input type="text" class="form-control" id="license-plate" name="license-plate" required>
+                <input type="text" class="form-control" id="license-plate" name="license-plate">
             </div>
 
 
