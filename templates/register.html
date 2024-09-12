@@ -62,7 +62,6 @@
                 <input type="text" class="form-control" id="license-plate" name="license-plate">
             </div>
 
-
             <div class="mb-3 text-center d-grid gap-2">
                 <button type="submit" class="btn btn-danger btn-block">Register</button>
             </div>
@@ -72,5 +71,18 @@
         </form>
     </div>
 </div>
+
+<!-- flashed msg -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="container">
+            <div class="content-section">
+                <div class="alert alert-danger" role="alert">
+                    {{ messages[0] }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
 
 {% endblock %}
