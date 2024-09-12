@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Manage rides
+{% endblock %}
+
+{% block body %}
+<div class="container py-5"></div>
+    <h2 class="mb-4 text-center">Manage your active rides</h2>
+    <div class="content-section p-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Source</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Seats</th>
+                    <th scope="col">Passenger names</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ride in rides %}
+                    <tr>
+                        <td>{{ ride['source'] }}</td>
+                        <td>{{ ride['destination'] }}</td>
+                        <td>{{ ride['date'] }}</td>
+                        <td>{{ ride['time'] }}</td>
+                        <td>{{ ride['seats'] }}</td>
+                        <td>{{ ride['passenger_list'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

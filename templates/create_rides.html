@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Create a ride
+{% endblock %}
+
+{% block body %}
+<div class="container py-5"></div>
+    <h2 class="mb-4 text-center">Create a ride</h2>
+    <div class="content-section p-3">
+        <form method="POST" class="small-form" action="/create-rides">
+            <div class="form-outline mb-4">
+                <label for="source" class="form-label">Source Address: </label>
+                <input type="text" class="form-control" id="source" name="source" required>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="destination" class="form-label">Destination Address: </label>
+                <input type="text" class="form-control" id="destination" name="destination" required>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="date" class="form-label">Date: </label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="time" class="form-label">Time: </label>
+                <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="seats" class="form-label">Number of seats: </label>
+                <input type="number" class="form-control" id="seats" name="seats" required maxlength="1">
+            </div>
+            <div class="mb-3 text-center d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-block">Create</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
