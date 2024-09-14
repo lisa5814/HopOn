@@ -63,33 +63,22 @@ def post_user(body) -> dict:
 
 def lambda_handler(event, context):
     logger.info(event) # log event
-    print(event)
-    http_method = event['httpMethod']
-    body = json.loads(event['body'])
-    email_in = body['email']
 
+    try:
+        http_method = event['httpMethod']
+        body = json.loads(event['body'])
+    except Exception as e:
+        http_method = 'POST'
+        body = event
+        
     if http_method == 'GET':
         # check if email exists
-        response = get_user(email_in)
+        response = get_user(body['email'])
     elif http_method == 'POST':
         # create new user
         response = post_user(body)
     else:
-        response = build_response(404, None)
+        body = {'message': 'Failed'}
+        response = build_response(404, body)
     
     return response
-
-if __name__ == "__main__":
-    event = {
-        "httpMethod": "POST",
-        "path": "/register",
-    }
-
-    event['body'] = json.dumps({
-        'email': 'test@test.dk',
-        'password': '1234'
-    })
-
-    res = lambda_handler(event, None)
-
-    print(res)
