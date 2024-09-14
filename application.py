@@ -55,9 +55,11 @@ def register():
         phone = request.form['phone']
         password = request.form['password']
         user_type = request.form['user-type']
+        vehicle = request.form['vehicle']
+        license_plate = request.form['license-plate']
 
         # save user to database
-        response = api_register(email, name, phone, password, user_type)
+        response = api_register(email, name, phone, password, user_type, vehicle, license_plate)
 
         if response == 'User already exists':
             flash('User already exists', 'error')
@@ -85,16 +87,21 @@ def create_rides():
     Create a new ride offer
     """
     if request.method == 'POST':
-        source = request.form['source']
-        destination = request.form['destination']
+        origin = request.form['from']
+        destination = request.form['to']
         date = request.form['date']
         time = request.form['time']
         seats = request.form['seats']
 
         # save ride to database
         # ...
+        print(f"origin: {origin}")
+        print(f"destination: {destination}")
+        print(f"date: {date}")
+        print(f"time: {time}")
+        print(f"seats: {seats}")
 
-        return redirect(url_for('home'))
+        return redirect(url_for('create_rides'))
     return render_template('create_rides.html')
 
 @application.route('/manage-rides', methods=['GET', 'POST'])
@@ -111,9 +118,7 @@ def search_rides():
     """
     Search for ride offers
     """
-    print('In search rides')
     if request.method == 'POST':
-        print('In post')
         origin = request.form.get('from')
         destination = request.form.get('to')
 
@@ -133,7 +138,7 @@ def search_rides():
 # call user API that triggers login lambda function
 def api_login(email: str, password: str) -> dict:
     query_string = f'email={email}&password={password}'
-    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/user/login?' + query_string
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/login?' + query_string
     response = requests.get(api_url)
     
     if response.status_code == 200:
@@ -144,8 +149,8 @@ def api_login(email: str, password: str) -> dict:
         return 'Error: Something went wrong'
     
 # call user API that triggers register lambda function
-def api_register(email: str, name: str, phone: int, password: str, user_type: str) -> dict:
-    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/user/register?'
+def api_register(email: str, name: str, phone: int, password: str, user_type: str, car: str = None, license_plate: str = None) -> dict:
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/register?'
     body = {
         'email': email,
         'name': name,
@@ -153,6 +158,10 @@ def api_register(email: str, name: str, phone: int, password: str, user_type: st
         'password': password,
         'type': user_type
     }
+    if car and license_plate:
+        body['car'] = car
+        body['license_plate'] = license_plate
+
     response = requests.post(api_url, json=body)
     
     if response.status_code == 200:
