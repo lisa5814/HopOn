@@ -101,6 +101,15 @@ def create_rides():
         print(f"time: {time}")
         print(f"seats: {seats}")
 
+        email = session['email'] # driver id
+
+        # save ride to database
+        response = api_create_ride(origin, destination, email, date, time, seats)
+
+        if response == 'Error: Something went wrong':
+            flash('Something went wrong', 'error')
+            return redirect(url_for('create_rides'))
+
         return redirect(url_for('create_rides'))
     return render_template('create_rides.html')
 
@@ -161,6 +170,38 @@ def api_register(email: str, name: str, phone: int, password: str, user_type: st
     if car and license_plate:
         body['car'] = car
         body['license_plate'] = license_plate
+
+    response = requests.post(api_url, json=body)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        if response.status_code == 404:
+            return response.json()['message']
+        return 'Error: Something went wrong'
+    
+def api_get_all_rides() -> dict:
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides'
+    response = requests.get(api_url)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return 'Error: Something went wrong'
+    
+def api_create_ride(origin: str , dest: str, email: str, date, time, seats, passengers = None) -> dict:
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides?'
+    body = {
+        'origin': origin,
+        'destination': dest,
+        'driver_id': email,
+        'date': date,
+        'time': time,
+        'seats': seats
+    }
+
+    if passengers:
+        body['passengers'] = passengers
 
     response = requests.post(api_url, json=body)
     
