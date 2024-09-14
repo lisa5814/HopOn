@@ -5,17 +5,17 @@
 {% endblock %}
 
 {% block body %}
-<div class="container py-5"></div>
+<div class="container py-5">
     <h2 class="mb-4 text-center">Create a ride</h2>
     <div class="content-section p-3">
         <form method="POST" class="small-form" action="/create-rides">
             <div class="form-outline mb-4">
-                <label for="source" class="form-label">Source Address: </label>
-                <input type="text" class="form-control" id="source" name="source" required>
+                <label for="from" class="form-label">Origin: </label>
+                <input type="text" class="form-control" id="from" name="from" required>
             </div>
             <div class="form-outline mb-4">
-                <label for="destination" class="form-label">Destination Address: </label>
-                <input type="text" class="form-control" id="destination" name="destination" required>
+                <label for="to" class="form-label">Destination Address: </label>
+                <input type="text" class="form-control" id="to" name="to" required>
             </div>
             <div class="form-outline mb-4">
                 <label for="date" class="form-label">Date: </label>
@@ -34,5 +34,6 @@
             </div>
         </form>
     </div>
+</div>
 
 {% endblock %}
