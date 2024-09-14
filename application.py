@@ -50,7 +50,6 @@ def register():
     Register a new user
     """
     if request.method == 'POST':
-        print('in post')
         email = request.form['email']
         name = request.form['name']
         phone = request.form['phone']
@@ -58,7 +57,7 @@ def register():
         user_type = request.form['user-type']
 
         # save user to database
-        response = api_register(email, name, password, user_type)
+        response = api_register(email, name, phone, password, user_type)
 
         if response == 'User already exists':
             flash('User already exists', 'error')
@@ -71,7 +70,8 @@ def register():
         user = {
             'email': email,
             'name': name,
-            'role': type
+            'phone': phone,
+            'type': user_type
         }
         save_user(user)
 
@@ -106,6 +106,28 @@ def manage_rides():
     rides = []
     return render_template('manage_rides.html', rides=rides)
 
+@application.route('/search-rides', methods=['GET', 'POST'])
+def search_rides():
+    """
+    Search for ride offers
+    """
+    print('In search rides')
+    if request.method == 'POST':
+        print('In post')
+        origin = request.form.get('from')
+        destination = request.form.get('to')
+
+        print(f"origin: {origin}")
+        print(f"destination: {destination}")
+        # origin = request.form['origin']
+        # destination = request.form['destination']
+        # date = request.form['date']
+
+        # search for rides in database
+        # return render_template('search_rides.html', rides=rides)
+    return render_template('maps.html')
+    
+
 ### API functions ###
 
 # call user API that triggers login lambda function
@@ -122,11 +144,12 @@ def api_login(email: str, password: str) -> dict:
         return 'Error: Something went wrong'
     
 # call user API that triggers register lambda function
-def api_register(email: str, name: str, password: str, user_type: str) -> dict:
+def api_register(email: str, name: str, phone: int, password: str, user_type: str) -> dict:
     api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/user/register?'
     body = {
         'email': email,
         'name': name,
+        'phone': phone,
         'password': password,
         'type': user_type
     }
@@ -151,7 +174,7 @@ def save_user(user: dict) -> None:
 def clear_user() -> None:
     session.pop('email', None)
     session.pop('name', None)
-    session.pop('role', None)
+    session.pop('type', None)
 
 
 if __name__ == '__main__':
