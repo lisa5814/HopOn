@@ -6,11 +6,13 @@ var mapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP
 };
 
-var map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
-
 // create autocomplete objects for all inputs
 var options = {
     types: ['address']
+}
+
+function initializeMap() {
+    var map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
 }
 
 function initializeAutocomplete() {
@@ -22,5 +24,8 @@ function initializeAutocomplete() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('googleMap')) {
+        initializeMap();
+    }
     initializeAutocomplete();
 });
