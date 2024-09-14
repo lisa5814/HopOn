@@ -8,29 +8,29 @@
 <div class="container py-5">
     <h2 class="mb-4 text-center">Create a ride</h2>
     <div class="content-section p-3">
-        <form method="POST" class="small-form" action="/create-rides">
-            <div class="form-outline mb-4">
-                <label for="from" class="form-label">Origin: </label>
-                <input type="text" class="form-control" id="from" name="from" required>
+        <form class="small-form" method="POST" action="/create-rides" class="form-horizontal">
+            <div class="form-group">
+                <label for="from" class="form-label">From: </label>
+                <input type="text" id="from" name="from" placeholder="Origin" class="form-control">
             </div>
-            <div class="form-outline mb-4">
-                <label for="to" class="form-label">Destination Address: </label>
-                <input type="text" class="form-control" id="to" name="to" required>
+            <div class="form-group">
+                <label for="to" class="form-label">To: </label>
+                <input type="text" id="to" name="to" placeholder="Destination" class="form-control">
             </div>
-            <div class="form-outline mb-4">
+            <div class="form-group mb-4">
                 <label for="date" class="form-label">Date: </label>
                 <input type="date" class="form-control" id="date" name="date" required>
             </div>
-            <div class="form-outline mb-4">
+            <div class="form-group mb-4">
                 <label for="time" class="form-label">Time: </label>
                 <input type="time" class="form-control" id="time" name="time" required>
             </div>
-            <div class="form-outline mb-4">
+            <div class="form-group mb-4">
                 <label for="seats" class="form-label">Number of seats: </label>
                 <input type="number" class="form-control" id="seats" name="seats" required maxlength="1">
             </div>
-            <div class="mb-3 text-center d-grid gap-2">
-                <button type="submit" class="btn btn-danger btn-block">Create</button>
+            <div class="form-group mb-4 text-center d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-block">Create ride</button>
             </div>
         </form>
     </div>
