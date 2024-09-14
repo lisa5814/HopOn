@@ -26,3 +26,8 @@ footer {
     text-decoration: underline;
     color: #ffffff;
 }
+#googleMap {
+width: 80%;
+height: 400px;
+margin: 20px auto;
+}
