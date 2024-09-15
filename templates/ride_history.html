@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Manage rides
+    Ride history
 {% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Manage your active rides</h2>
+    <h2 class="mb-4 text-center">Look at your ride history</h2>
     <div class="content-section p-3">
         <table class="table table-striped">
             <thead>
@@ -22,7 +22,7 @@
             <tbody>
                 {% for ride in rides %}
                     <tr>
-                        <td>{{ ride['source'] }}</td>
+                        <td>{{ ride['origin'] }}</td>
                         <td>{{ ride['destination'] }}</td>
                         <td>{{ ride['date'] }}</td>
                         <td>{{ ride['time'] }}</td>
