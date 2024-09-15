@@ -17,13 +17,16 @@
                 {% if session['type'] == 'driver' %}
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active text-white fs-5" aria-current="page" href="/create-rides">Create a ride</a>
+                            <a class="nav-link active text-white fs-5" aria-current="page" href="/rides/create">Create a ride</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white fs-5" href="/manage-rides">Manage rides</a>
+                            <a class="nav-link text-white fs-5" href="/rides/history">Ride history</a>
                         </li>
+                    </ul>
+                {% elif session['type'] == 'passenger' %}
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white fs-5" href="/search-rides">Search rides</a>
+                            <a class="nav-link text-white fs-5" href="/rides">All rides</a>
                         </li>
                     </ul>
                 {% endif %}
