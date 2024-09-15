@@ -37,16 +37,23 @@ def get_all_rides():
     
     return build_response(200, db_response['Items'])
 
-def get_rides_by_driver(driver_id):
+def get_driver_rides(driver_id):
     try:
+        # search index for driver_id
         response = table.query(
+            IndexName='driver_id-index',
             KeyConditionExpression=Key('driver_id').eq(driver_id)
         )
+        if response['Items']:
+            logger.info('Items found ' + str(response['Items']))
+            response = build_response(200, response['Items'])
+        else:
+            response = build_response(404, None)
     except Exception as e:
         logger.error(e)
         return build_response(500, None)
     
-    return build_response(200, response['Items'])
+    return response
 
 def post_ride(body) -> dict:
     try:
@@ -66,26 +73,31 @@ def post_ride(body) -> dict:
 def lambda_handler(event, context):
     logger.info(event)
     try:
+        logger.info("httpMethod: " + event['httpMethod'])
         http_method = event['httpMethod']
         body = json.loads(event['body'])
+        query_string = event['queryStringParameters']
     except Exception as e:
         http_method = 'POST'
         body = event
 
     if http_method == 'GET':
-        # check if body has ride_id
-        if 'driver_id' in body:
+        logger.info("GET request")
+        if query_string:
+            logger.info("Query string: " + str(query_string))
             # get rides by specific driver
-            response = get_rides_by_driver(body['driver_id'])
+            driver_id = query_string['driver_id']
+            response = get_driver_rides(driver_id)
         else:
             # get all rides
             response = get_all_rides()
-        
-    if http_method == 'POST':
+    elif http_method == 'POST':
+        logger.info("POST request")
         # create a new ride
         body['ride_id'] = ride_id
         response = post_ride(body)
     else:
+        logger.info("Invalid request")
         body = {'message': 'Failed'}
         response = build_response(404, body)
     
