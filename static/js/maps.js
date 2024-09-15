@@ -8,7 +8,7 @@ var mapOptions = {
 
 // create autocomplete objects for all inputs
 var options = {
-    types: ['address']
+    types: ['(cities)']
 }
 
 function initializeMap() {
