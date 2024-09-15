@@ -82,7 +82,7 @@ def register():
     
     return render_template('register.html')
 
-@application.route('/create-rides', methods=['GET', 'POST'])
+@application.route('/rides/create', methods=['GET', 'POST'])
 def create_rides():
     """
     Create a new ride offer
@@ -93,19 +93,28 @@ def create_rides():
         date = request.form['date']
         time = request.form['time']
         seats = request.form['seats']
-        email = session['email'] # driver id
+        driver_id = session['email'] # driver id
 
         # save ride to database
-        response = api_create_ride(origin, destination, email, date, time, seats)
+        response = api_create_ride(origin, destination, driver_id, date, time, seats)
 
         if response == 'Error: Something went wrong':
             flash('Something went wrong', 'error')
             return redirect(url_for('create_rides'))
+        else:
+            flash('Ride created successfully', 'success')
+        
+        if check_driver_rides(driver_id):
+            driver_rides = get_driver_rides(driver_id)
+            driver_rides.update(response)
+            save_driver_rides(driver_id, driver_rides)
+        else:
+            save_driver_rides(driver_id, response['Item'])
 
         return redirect(url_for('create_rides'))
     return render_template('create_rides.html')
 
-@application.route('/ride-history', methods=['GET', 'POST'])
+@application.route('/rides/history', methods=['GET', 'POST'])
 def ride_history():
     """
     Manage ride offers
@@ -113,32 +122,28 @@ def ride_history():
     # get all rides from the driver
     driver_id = session['email']
     
-    if check_rides():
+    if check_driver_rides(driver_id):
         rides = session.get('rides')
     else:
         rides = api_get_all_driver_rides(driver_id)
-        save_rides(rides)
+        # add rides to session
+        # check if rides is not empty
+        save_driver_rides(driver_id, rides)
     
     return render_template('ride_history.html', rides=rides)
 
-@application.route('/search-rides', methods=['GET', 'POST'])
+@application.route('/rides', methods=['GET', 'POST'])
 def search_rides():
     """
-    Search for ride offers
+    See all available rides
     """
-    if request.method == 'POST':
-        origin = request.form.get('from')
-        destination = request.form.get('to')
-
-        print(f"origin: {origin}")
-        print(f"destination: {destination}")
-        # origin = request.form['origin']
-        # destination = request.form['destination']
-        # date = request.form['date']
-
-        # search for rides in database
-        # return render_template('search_rides.html', rides=rides)
-    return render_template('maps.html')
+    if check_rides():
+        rides = session.get('rides')
+    else:
+        rides = api_get_all_rides()
+        save_rides(rides)
+    
+    return render_template('all_rides.html', rides=rides)
     
 
 ### API functions ###
@@ -242,6 +247,18 @@ def check_rides() -> bool:
 
 def save_rides(rides: dict) -> None:
     session['rides'] = rides
+
+# save driver rides to session
+def check_driver_rides(email: str) -> bool:
+    if email in session:
+        return True
+    return False
+
+def get_driver_rides(email: str) -> dict:
+    return session[email]
+
+def save_driver_rides(email: str, rides: dict) -> None:
+    session[email] = rides
 
 if __name__ == '__main__':
     application.run(debug=True)
