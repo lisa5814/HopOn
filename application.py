@@ -42,6 +42,7 @@ def login():
 @application.route('/logout')
 def logout():
     clear_user()
+    session.pop('rides', None)
     return redirect(url_for('home'))
 
 @application.route('/register', methods=['GET', 'POST'])
@@ -92,15 +93,6 @@ def create_rides():
         date = request.form['date']
         time = request.form['time']
         seats = request.form['seats']
-
-        # save ride to database
-        # ...
-        print(f"origin: {origin}")
-        print(f"destination: {destination}")
-        print(f"date: {date}")
-        print(f"time: {time}")
-        print(f"seats: {seats}")
-
         email = session['email'] # driver id
 
         # save ride to database
@@ -113,14 +105,21 @@ def create_rides():
         return redirect(url_for('create_rides'))
     return render_template('create_rides.html')
 
-@application.route('/manage-rides', methods=['GET', 'POST'])
-def manage_rides():
+@application.route('/ride-history', methods=['GET', 'POST'])
+def ride_history():
     """
     Manage ride offers
     """
-    # get all rides from database
-    rides = []
-    return render_template('manage_rides.html', rides=rides)
+    # get all rides from the driver
+    driver_id = session['email']
+    
+    if check_rides():
+        rides = session.get('rides')
+    else:
+        rides = api_get_all_driver_rides(driver_id)
+        save_rides(rides)
+    
+    return render_template('ride_history.html', rides=rides)
 
 @application.route('/search-rides', methods=['GET', 'POST'])
 def search_rides():
@@ -189,8 +188,18 @@ def api_get_all_rides() -> dict:
     else:
         return 'Error: Something went wrong'
     
+def api_get_all_driver_rides(email: str) -> dict:
+    query_string = f'driver_id={email}'
+    api_url = f'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides?driver_id=janedoe@example.com'
+    response = requests.get(api_url)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return 'Error: Something went wrong'
+    
 def api_create_ride(origin: str , dest: str, email: str, date, time, seats, passengers = None) -> dict:
-    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides?'
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides'
     body = {
         'origin': origin,
         'destination': dest,
@@ -226,6 +235,13 @@ def clear_user() -> None:
     session.pop('name', None)
     session.pop('type', None)
 
+def check_rides() -> bool:
+    if 'rides' in session:
+        return True
+    return False
+
+def save_rides(rides: dict) -> None:
+    session['rides'] = rides
 
 if __name__ == '__main__':
     application.run(debug=True)
