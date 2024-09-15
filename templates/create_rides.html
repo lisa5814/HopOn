@@ -8,7 +8,7 @@
 <div class="container py-5">
     <h2 class="mb-4 text-center">Create a ride</h2>
     <div class="content-section p-3">
-        <form class="small-form" method="POST" action="/create-rides" class="form-horizontal">
+        <form class="small-form" method="POST" action="/rides/create" class="form-horizontal">
             <div class="form-group">
                 <label for="from" class="form-label">From: </label>
                 <input type="text" id="from" name="from" placeholder="Origin" class="form-control">
@@ -35,5 +35,17 @@
         </form>
     </div>
 </div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="container py-5">
+            <div class="content-section p-3">
+                <div class="alert alert-danger" role="alert">
+                    {{ messages[0] }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
 
 {% endblock %}
