@@ -6,8 +6,85 @@
 
 {% block body %}
 <div class="container py-5">
-  <h1>Home</h1>
-  <p>Welcome to the home page!</p>
-    <p>Click <a href="/login">here</a> to login.</p>
+  {% if session['type'] == 'driver' %}
+    <h1 class="text-center">Welcome Driver</h1>
+
+    <!-- how to create a ride card instruction -->
+    <div class="card mt-5">
+      <div class="card-body">
+        <h5 class="card-title fs-3">How to create a ride</h5>
+        <p class="card-text fs-5">To create a ride, click on the "Create a ride" button in the navigation bar. Provide the origin, destination, date, time, and number of seats. Your ride will be listed on the rides page.</p>
+      </div>
+    </div>     
+
+  {% elif session['type'] == 'passenger' %}
+    <h1 class="text-center">Welcome Passenger</h1>
+
+    <!-- how to join a ride card instruction -->
+    <div class="card mt-5">
+      <div class="card-body">
+        <h5 class="card-title fs-3">How to join a ride</h5>
+        <p class="card-text fs-5">To join a ride, click on the "All rides" button in the navigation bar. Find a ride that you want to join and click on the "Join" button. Your request will be sent to the driver.</p>
+      </div>
+    </div>
+
+  {% else %}
+    <h1 class="text-center">Welcome</h1>
+
+    <div class="row mt-5">
+      <!-- about card -->
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-3">About</h5>
+            <p class="card-text fs-5">HopOn is a ride-sharing platform that connects drivers and passengers. Drivers can create rides and passengers can join their rides.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- why card -->
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title fs-3">Why use HopOn?</h5>
+            <p class="card-text fs-5">HopOn is a convenient way to travel. It is cost-effective and environmentally friendly. It is also a great way to meet new people.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="row mt-3">
+        <!-- how card -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title fs-3">How to use HopOn</h5>
+              <p class="card-text fs-5">Drivers can create rides by providing the origin, destination, date, time, and number of seats. Passengers can join rides by searching for rides and requesting to join.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- benefits card -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title fs-3">Benefits of using HopOn</h5>
+              <p class="card-text fs-5">HopOn is a great way to save money, reduce traffic congestion, and reduce carbon emissions. It is also a great way to meet new people and make new friends.</p>
+            </div>
+          </div>  
+      </div>
+    </div>
+
+    <!-- join us text and join button and login button -->
+    <div class="text-center mt-4">
+      <p class="fs-5">Join us now and start sharing rides!
+        <a href="/register" class="text-danger">Click here</a>
+      </p>
+      <p class="fs-5">Already a member?
+        <a href="/login" class="text-danger">Login</a>
+      </p>
+    </div>
+
+  {% endif %}
 </div>
 {% endblock %}
