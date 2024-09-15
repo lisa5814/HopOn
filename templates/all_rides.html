@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    All rides
+{% endblock %}
+
+{% block body %}
+
+<!-- make a card instead of a table -->
+<div class="container py-5">
+    <h2 class="mb-4 text-center">All active rides</h2>
+    <div class="content-section p-3">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for ride in rides %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ ride.origin }} -> {{ ride.destination }}</h5>
+                            <p class="card-text">Date: {{ ride.date }}</p>
+                            <p class="card-text">Departure time: {{ ride.time }}</p>
+                            <p class="card-text">Driver: {{ ride.driver_id }}</p>
+                            <!-- <p class="card-text">Passengers: {{ ride.passengers }}</p> -->
+                            {% if session['type'] != 'driver' %}
+                                <!-- {% if user not in ride.passengers %} -->
+                                    <a href="#" class="btn btn-danger">Join</a>
+                                <!-- {% else %} -->
+                                    <a href="#" class="btn btn-info">Leave</a>
+                                <!-- {% endif %} -->
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
