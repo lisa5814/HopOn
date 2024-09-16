@@ -19,6 +19,21 @@ GoogleMaps(application)
 
 @application.route('/', methods=['GET', 'POST'])
 def home():
+    # check if user is logged in
+    if is_logged_in() and session['type'] == 'driver':
+        driver_id = session['email']
+        if check_driver_rides(driver_id):
+            rides = get_driver_rides(driver_id)
+        else:
+            rides = api_get_all_driver_rides(driver_id)
+            save_driver_rides(driver_id, rides)
+    elif is_logged_in() and session['type'] == 'passenger':
+        if check_rides():
+            rides = session.get('rides')
+        else:
+            rides = api_get_all_rides()
+            save_driver_rides(driver_id, rides)
+
     return render_template('index.html')
 
 @application.route('/login', methods=['GET', 'POST'])
@@ -97,19 +112,20 @@ def create_rides():
 
         # save ride to database
         response = api_create_ride(origin, destination, driver_id, date, time, seats)
+        response_body = json.loads(response['body'])
 
         if response == 'Error: Something went wrong':
-            flash('Something went wrong', 'error')
+            flash('Something went wrong')
             return redirect(url_for('create_rides'))
         else:
-            flash('Ride created successfully', 'success')
+            flash('Ride created successfully')
         
         if check_driver_rides(driver_id):
             driver_rides = get_driver_rides(driver_id)
-            driver_rides.update(response)
+            driver_rides.append(response_body['Item'])
             save_driver_rides(driver_id, driver_rides)
         else:
-            save_driver_rides(driver_id, response['Item'])
+            save_driver_rides(driver_id, response_body['Item'])
 
         return redirect(url_for('create_rides'))
     return render_template('create_rides.html')
@@ -123,12 +139,14 @@ def ride_history():
     driver_id = session['email']
     
     if check_driver_rides(driver_id):
-        rides = session.get('rides')
+        rides = get_driver_rides(driver_id)
     else:
         rides = api_get_all_driver_rides(driver_id)
         # add rides to session
         # check if rides is not empty
         save_driver_rides(driver_id, rides)
+
+    print("This is the rides: ", rides)
     
     return render_template('ride_history.html', rides=rides)
 
@@ -195,7 +213,7 @@ def api_get_all_rides() -> dict:
     
 def api_get_all_driver_rides(email: str) -> dict:
     query_string = f'driver_id={email}'
-    api_url = f'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides?driver_id=janedoe@example.com'
+    api_url = f'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides?' + query_string
     response = requests.get(api_url)
     
     if response.status_code == 200:
@@ -203,19 +221,18 @@ def api_get_all_driver_rides(email: str) -> dict:
     else:
         return 'Error: Something went wrong'
     
-def api_create_ride(origin: str , dest: str, email: str, date, time, seats, passengers = None) -> dict:
+def api_create_ride(origin: str , dest: str, email: str, date, time, seats) -> dict:
     api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/rides'
+    passengers = []
     body = {
         'origin': origin,
         'destination': dest,
         'driver_id': email,
         'date': date,
         'time': time,
-        'seats': seats
+        'seats': int(seats),
+        'passengers': passengers
     }
-
-    if passengers:
-        body['passengers'] = passengers
 
     response = requests.post(api_url, json=body)
     
@@ -251,11 +268,13 @@ def save_rides(rides: dict) -> None:
 # save driver rides to session
 def check_driver_rides(email: str) -> bool:
     if email in session:
+        print('driver rides found')
+        print(session[email])
         return True
     return False
 
 def get_driver_rides(email: str) -> dict:
-    return session[email]
+    return session.get(email)
 
 def save_driver_rides(email: str, rides: dict) -> None:
     session[email] = rides
