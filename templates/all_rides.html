@@ -31,7 +31,7 @@
                             <p class="card-text">Date: {{ ride.date }}</p>
                             <p class="card-text">Departure time: {{ ride.time }}</p>
                             <p class="card-text">Driver: {{ ride.driver_id }}</p>
-                            <p class="card-text">Seats available: {{ ride.seats }}</p>
+                            <p class="card-text">Seats available: {{ ride.seats | int }}</p>
                             {% if session['type'] != 'driver' %}
                                 {% if session['email'] not in ride.passengers %}
                                     {% if ride.seats > 0 %}
