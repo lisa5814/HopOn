@@ -32,7 +32,7 @@ def home():
             rides = session.get('rides')
         else:
             rides = api_get_all_rides()
-            save_driver_rides(driver_id, rides)
+            save_rides(rides)
 
     return render_template('index.html')
 
@@ -160,6 +160,10 @@ def search_rides():
     else:
         rides = api_get_all_rides()
         save_rides(rides)
+
+    # if request.method == 'POST':
+    #     # get the ride id
+    #     ride_id = request.form['ride_id']
     
     return render_template('all_rides.html', rides=rides)
     
