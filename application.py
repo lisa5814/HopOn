@@ -145,13 +145,11 @@ def ride_history():
         # add rides to session
         # check if rides is not empty
         save_driver_rides(driver_id, rides)
-
-    print("This is the rides: ", rides)
     
     return render_template('ride_history.html', rides=rides)
 
 @application.route('/rides', methods=['GET', 'POST'])
-def search_rides():
+def all_rides():
     """
     See all available rides
     """
@@ -161,11 +159,24 @@ def search_rides():
         rides = api_get_all_rides()
         save_rides(rides)
 
-    # if request.method == 'POST':
-    #     # get the ride id
-    #     ride_id = request.form['ride_id']
-    
     return render_template('all_rides.html', rides=rides)
+
+@application.route('/rides/join', methods=['GET', 'POST'])
+def join_ride():
+    """
+    Join a ride
+    """
+    if request.method == 'POST':
+        ride_id = request.form['ride_id']
+        passenger_id = session['email']
+
+        response = api_join_ride(ride_id, passenger_id)
+        if response == 'Error: Something went wrong':
+            flash('Something went wrong')
+            return redirect(url_for('all_rides'))
+        else:
+            flash('Ride joined successfully')
+            return redirect(url_for('all_rides'))
     
 
 ### API functions ###
@@ -246,6 +257,20 @@ def api_create_ride(origin: str , dest: str, email: str, date, time, seats) -> d
         if response.status_code == 404:
             return response.json()['message']
         return 'Error: Something went wrong'
+    
+def api_join_ride(ride_id: str, passenger_id: str) -> dict:
+    api_url = 'https://hrsnw6fon5.execute-api.us-east-1.amazonaws.com/prod/bookings'
+    body = {
+        'ride_id': ride_id,
+        'passenger_id': passenger_id
+    }
+
+    response = requests.post(api_url, json=body)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return 'Error: Something went wrong'
 
 ### session functions ###
 def is_logged_in() -> bool:
@@ -265,6 +290,9 @@ def check_rides() -> bool:
     if 'rides' in session:
         return True
     return False
+
+def get_all_rides() -> dict:
+    return session.get('rides')
 
 def save_rides(rides: dict) -> None:
     session['rides'] = rides
