@@ -15,7 +15,7 @@
                     <th scope="col">To</th>
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
-                    <th scope="col">Seats</th>
+                    <th scope="col">Seats left</th>
                     <th scope="col">Passenger IDs</th>
                 </tr>
             </thead>
@@ -28,7 +28,16 @@
                             <td>{{ ride['date'] }}</td>
                             <td>{{ ride['time'] }}</td>
                             <td>{{ ride['seats'] }}</td>
-                            <td>{{ ride['passengers'] | join(', ') }}</td>
+                            <td>
+                            {% if ride['passengers'] %}
+                                <ul>
+                                    {% for passenger in ride['passengers'] %}
+                                        <li>{{ passenger }}</li>
+                                        {% endfor %}
+                                </ul>
+                                {%endif%}
+                            </td>
+                            <!-- <td>{{ ride['passengers'] | join(', ') }}</td> -->
                         </tr>
                     {% endfor %}
                 {% else %}
