@@ -13,19 +13,30 @@
         <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for ride in rides %}
                 <div class="col">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">{{ ride.origin }} -> {{ ride.destination }}</h5>
                             <p class="card-text">Date: {{ ride.date }}</p>
                             <p class="card-text">Departure time: {{ ride.time }}</p>
                             <p class="card-text">Driver: {{ ride.driver_id }}</p>
-                            <!-- <p class="card-text">Passengers: {{ ride.passengers }}</p> -->
+                            <p class="card-text">Seats available: {{ ride.seats }}</p>
                             {% if session['type'] != 'driver' %}
-                                <!-- {% if user not in ride.passengers %} -->
-                                    <a href="#" class="btn btn-danger">Join</a>
-                                <!-- {% else %} -->
-                                    <a href="#" class="btn btn-info">Leave</a>
-                                <!-- {% endif %} -->
+                                {% if session['email'] not in ride.passengers %}
+                                    {% if ride.seats > 0 %}
+                                        <form action="/" method="post"></form>
+                                            <input type="hidden" name="ride_id" value="{{ ride.id }}">
+                                            {% if session['email'] %}
+                                                <button type="submit" class="btn btn-danger btn-block">Join</button>
+                                            {% else %}
+                                                <a href="/login" class="btn btn-danger btn-block">Login to join</a>
+                                            {% endif %}
+                                        </form>
+                                    {% else %}
+                                        <p class="card-text text-danger">No seats available.</p>
+                                    {% endif %}
+                                {% else %}
+                                    <p class="card-text text-danger">You have already joined this ride.</p>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
