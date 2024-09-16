@@ -169,6 +169,7 @@ def join_ride():
     if request.method == 'POST':
         ride_id = request.form['ride_id']
         passenger_id = session['email']
+        driver_id = None
 
         response = api_join_ride(ride_id, passenger_id)
         if response == 'Error: Something went wrong':
@@ -176,6 +177,28 @@ def join_ride():
             return redirect(url_for('all_rides'))
         else:
             flash('Ride joined successfully')
+            # update rides in session
+            rides = get_all_rides()
+
+            # find ride in rides
+            for ride in rides:
+                if ride['ride_id'] == ride_id:
+                    ride['passengers'].append(passenger_id)
+                    ride['seats'] -= 1
+                    # get driver id
+                    driver_id = ride['driver_id']
+
+            save_rides(rides)
+
+            if check_driver_rides(driver_id):
+                driver_rides = get_driver_rides(driver_id)
+                # find ride in driver rides
+                for ride in driver_rides:
+                    if ride['ride_id'] == ride_id:
+                        ride['passengers'].append(passenger_id)
+                        ride['seats'] -= 1
+                    
+
             return redirect(url_for('all_rides'))
     
 
