@@ -6,30 +6,36 @@
 
 {% block body %}
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Look at your ride history</h2>
+    <h2 class="mb-4 text-center">Your ride history</h2>
     <div class="content-section p-3">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Source</th>
-                    <th scope="col">Destination</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
                     <th scope="col">Seats</th>
-                    <th scope="col">Passenger names</th>
+                    <th scope="col">Passenger IDs</th>
                 </tr>
             </thead>
             <tbody>
-                {% for ride in rides %}
+                {% if rides %}
+                    {% for ride in rides %}
+                        <tr>
+                            <td>{{ ride['origin'] }}</td>
+                            <td>{{ ride['destination'] }}</td>
+                            <td>{{ ride['date'] }}</td>
+                            <td>{{ ride['time'] }}</td>
+                            <td>{{ ride['seats'] }}</td>
+                            <td>{{ ride['passengers'] | join(', ') }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
-                        <td>{{ ride['origin'] }}</td>
-                        <td>{{ ride['destination'] }}</td>
-                        <td>{{ ride['date'] }}</td>
-                        <td>{{ ride['time'] }}</td>
-                        <td>{{ ride['seats'] }}</td>
-                        <td>{{ ride['passenger_list'] }}</td>
+                        <td colspan="6" class="text-center">No rides found</td>
                     </tr>
-                {% endfor %}
+                {% endif %} 
             </tbody>
         </table>
     </div>
