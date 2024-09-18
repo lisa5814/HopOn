@@ -27,16 +27,18 @@
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">{{ ride.origin }} -> {{ ride.destination }}</h5>
+                            <h5 class="card-title" data-from="{{ ride.origin }}" data-to="{{ ride.destination }}">
+                                <strong>From: </strong> {{ ride.origin }} <br> <strong>To: </strong> {{ ride.destination }}
+                            </h5>
                             <p class="card-text">Date: {{ ride.date }}</p>
                             <p class="card-text">Departure time: {{ ride.time }}</p>
                             <p class="card-text">Driver: {{ ride.driver_id }}</p>
                             <p class="card-text">Seats available: {{ ride.seats | int }}</p>
+                            <p class="card-text">Travel Time: <span class="travel-time"></span></p>
                             {% if session['type'] != 'driver' %}
                                 {% if session['email'] not in ride.passengers %}
                                     {% if ride.seats > 0 %}
                                         <form action="/rides/join" method="post">
-                                            <!-- <input type="hidden" name="action" value="join_ride"> -->
                                             <input type="hidden" name="ride_id" value="{{ ride.ride_id }}">
                                             {% if session['email'] %}
                                                 <button type="submit" class="btn btn-danger btn-block">Join</button>
