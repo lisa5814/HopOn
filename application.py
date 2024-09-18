@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from flask_session import Session
+from datetime import datetime
 import requests
 import json
 
@@ -23,7 +24,7 @@ def home():
             save_driver_rides(driver_id, rides)
     elif is_logged_in() and session['type'] == 'passenger':
         if check_rides():
-            rides = session.get('rides')
+            rides = get_all_rides()
         else:
             rides = api_get_all_rides()
             save_rides(rides)
@@ -143,6 +144,9 @@ def ride_history():
         # add rides to session
         # check if rides is not empty
         save_driver_rides(driver_id, rides)
+
+    # sort by most recent date
+    rides = sorted(rides, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
     
     return render_template('ride_history.html', rides=rides)
 
@@ -155,12 +159,16 @@ def all_rides():
         return redirect(url_for('login'))
 
     if check_rides():
-        rides = session.get('rides')
+        rides = get_all_rides()
     else:
         rides = api_get_all_rides()
         save_rides(rides)
 
-    return render_template('all_rides.html', rides=rides)
+    # filter rides to include only those after today
+    today = datetime.today().date()
+    filtered_rides = [ride for ride in rides if datetime.strptime(ride['date'], '%Y-%m-%d').date() > today]
+
+    return render_template('all_rides.html', rides=filtered_rides)
 
 @application.route('/rides/join', methods=['GET', 'POST'])
 def join_ride():
