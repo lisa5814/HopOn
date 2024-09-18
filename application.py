@@ -21,6 +21,8 @@ def home():
             rides = get_driver_rides(driver_id)
         else:
             rides = api_get_all_driver_rides(driver_id)
+            if rides == 'Error: Something went wrong':
+                rides = None
             save_driver_rides(driver_id, rides)
     elif is_logged_in() and session['type'] == 'passenger':
         if check_rides():
@@ -141,12 +143,11 @@ def ride_history():
         rides = get_driver_rides(driver_id)
     else:
         rides = api_get_all_driver_rides(driver_id)
-        # add rides to session
-        # check if rides is not empty
         save_driver_rides(driver_id, rides)
 
-    # sort by most recent date
-    rides = sorted(rides, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
+    if rides is not None:
+        # sort by most recent date
+        rides = sorted(rides, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
     
     return render_template('ride_history.html', rides=rides)
 
