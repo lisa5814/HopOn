@@ -1,9 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from flask_session import Session
-from flask_googlemaps import GoogleMaps
 import requests
 import json
-import boto3
 
 application = Flask(__name__)
 application.secret_key = 'secret key' 
@@ -12,10 +10,6 @@ application.secret_key = 'secret key'
 application.config['SESSION_PERMANENT'] = False
 application.config['SESSION_TYPE'] = 'filesystem' 
 Session(application)
-
-# Google Maps API key
-application.config['GOOGLEMAPS_KEY'] = ""
-GoogleMaps(application)
 
 @application.route('/', methods=['GET', 'POST'])
 def home():
@@ -37,10 +31,7 @@ def home():
     return render_template('index.html')
 
 @application.route('/login', methods=['GET', 'POST'])
-def login():
-    if is_logged_in():
-        return redirect(url_for('home'))
-    
+def login():  
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -102,6 +93,9 @@ def create_rides():
     """
     Create a new ride offer
     """
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         origin = request.form['from']
         destination = request.form['to']
@@ -128,6 +122,7 @@ def create_rides():
             save_driver_rides(driver_id, response_body['Item'])
 
         return redirect(url_for('create_rides'))
+    
     return render_template('create_rides.html')
 
 @application.route('/rides/history', methods=['GET', 'POST'])
@@ -135,6 +130,9 @@ def ride_history():
     """
     Manage ride offers
     """
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
     # get all rides from the driver
     driver_id = session['email']
     
@@ -153,6 +151,9 @@ def all_rides():
     """
     See all available rides
     """
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
     if check_rides():
         rides = session.get('rides')
     else:
@@ -166,6 +167,9 @@ def join_ride():
     """
     Join a ride
     """
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         ride_id = request.form['ride_id']
         passenger_id = session['email']
@@ -197,7 +201,6 @@ def join_ride():
                     if ride['ride_id'] == ride_id:
                         ride['passengers'].append(passenger_id)
                         ride['seats'] -= 1
-                    
 
             return redirect(url_for('all_rides'))
     
@@ -323,8 +326,6 @@ def save_rides(rides: dict) -> None:
 # save driver rides to session
 def check_driver_rides(email: str) -> bool:
     if email in session:
-        print('driver rides found')
-        print(session[email])
         return True
     return False
 
