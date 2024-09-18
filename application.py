@@ -94,7 +94,7 @@ def create_rides():
     """
     Create a new ride offer
     """
-    if not is_logged_in():
+    if not is_logged_in() or session['type'] != 'driver':
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -131,7 +131,7 @@ def ride_history():
     """
     Manage ride offers
     """
-    if not is_logged_in():
+    if not is_logged_in() or session['type'] != 'driver':
         return redirect(url_for('login'))
 
     # get all rides from the driver
@@ -175,9 +175,6 @@ def join_ride():
     """
     Join a ride
     """
-    if not is_logged_in():
-        return redirect(url_for('login'))
-
     if request.method == 'POST':
         ride_id = request.form['ride_id']
         passenger_id = session['email']
