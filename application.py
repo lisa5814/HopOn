@@ -119,7 +119,10 @@ def create_rides():
         
         if check_driver_rides(driver_id):
             driver_rides = get_driver_rides(driver_id)
-            driver_rides.append(response_body['Item'])
+            if driver_rides is not None:
+                driver_rides.append(response_body['Item'])
+            else:
+                driver_rides = [response_body['Item']]
             save_driver_rides(driver_id, driver_rides)
         else:
             save_driver_rides(driver_id, response_body['Item'])
