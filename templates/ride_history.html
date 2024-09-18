@@ -27,7 +27,7 @@
                             <td>{{ ride['destination'] }}</td>
                             <td>{{ ride['date'] }}</td>
                             <td>{{ ride['time'] }}</td>
-                            <td>{{ ride['seats'] }}</td>
+                            <td>{{ ride['seats'] | int }}</td>
                             <td>
                             {% if ride['passengers'] %}
                                 <ul>
