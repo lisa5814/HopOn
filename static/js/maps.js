@@ -1,20 +1,8 @@
-// set map options
-var myLatLng = {lat: 51.5074, lng: 0.1278};
-var mapOptions = {
-    center: myLatLng,
-    zoom: 7,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-};
-
-// create autocomplete objects for all inputs
 var options = {
-    types: ['(cities)']
+    types: ['address']
 }
 
-function initializeMap() {
-    var map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
-}
-
+// create autocomplete objects for origin and destination inputs
 function initializeAutocomplete() {
     var fromInput = document.getElementById('from');
     var toInput = document.getElementById('to');
@@ -23,9 +11,37 @@ function initializeAutocomplete() {
     var toAutocomplete = new google.maps.places.Autocomplete(toInput, options);
 }
 
+function calculateTravelTime(from, to, callback) {
+    var service = new google.maps.DistanceMatrixService(); // initialize the distance service to calculate travel time
+    service.getDistanceMatrix({
+        origins: [from],
+        destinations: [to],
+        travelMode: google.maps.TravelMode.DRIVING,
+    }, function(response, status) {
+        if (status === google.maps.DistanceMatrixStatus.OK) {
+            var travelTime = response.rows[0].elements[0].duration.text;
+            callback(travelTime);
+        } else {
+            console.error('Error calculating travel time:', status);
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('googleMap')) {
-        initializeMap();
-    }
+    // initialize autocomplete
     initializeAutocomplete();
+
+    // calculate travel time for each ride
+    var rides = document.querySelectorAll('.card-title');
+
+    rides.forEach(function(ride) {
+        var from = ride.getAttribute('data-from');
+        var to = ride.getAttribute('data-to');
+        var travelTimeElement = ride.closest('.card-body').querySelector('.travel-time');
+        
+        calculateTravelTime(from, to, function(travelTime) {
+            travelTimeElement.textContent = travelTime;
+        });
+    });
 });
+
